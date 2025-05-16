@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.EventSystems;
 
 namespace ASPax.Handler
 {
@@ -10,7 +11,7 @@ namespace ASPax.Handler
     /// <summary>
     /// Easy and safety access of all elements from transform, rectTransform and Screen/World Positions
     /// </summary>
-    public class Transform : MonoBehaviour
+    public class Transform : UIBehaviour
     {
         [Header(Header.MANAGEABLE, order = 0), HorizontalLine]
         [Space(-10, order = 1)]
@@ -24,8 +25,41 @@ namespace ASPax.Handler
         [SerializeField, ReadOnly, ShowIf(nameof(isRectTransform))] private Rect rect;
         [SerializeField, ReadOnly, ShowIf(nameof(isRectTransform))] private float ratio;
         [SerializeField, ReadOnly, ShowIf(nameof(isRectTransform))] private float result;
+
+        [Header(Header.components, order = 0), HorizontalLine]
+        [SerializeField, ReadOnly, ShowIf(nameof(isRectTransform))] private RectTransform rectTransform;
+        [SerializeField, ReadOnly, ShowIf(nameof(isRectTransform))] private Camera mainCamera;
 #if UNITY_EDITOR
-        [Header("VALUES - Editor Test", order = 0)]
+        /// <summary>
+        /// Used to update information via editor mode
+        /// </summary>
+        [UnityEditor.CustomEditor(typeof(Transform))]
+        public class TransformEditor : UnityEditor.Editor
+        {
+            /// <inheritdoc/>
+            private void OnSceneGUI()
+            {
+                Update();
+            }
+            /// <summary>
+            /// Update Values and Inspector informations
+            /// </summary>
+            private void Update()
+            {
+                if (UnityEditor.EditorApplication.isPlayingOrWillChangePlaymode)
+                    return;
+
+                Transform _transform = (Transform)target;
+
+                if (_transform == null)
+                    return;
+
+                _transform.UpdateValues();
+                _transform.AssignValuesToInspector();
+            }
+        }
+
+        [Header("VALUES - Editor Test", order = 0), HorizontalLine]
         [SerializeField, ReadOnly] private Vector3 position;
         [SerializeField, ReadOnly] private Vector3 localPosition;
         [SerializeField, ReadOnly] private Vector3 anchoredPosition;
@@ -41,18 +75,20 @@ namespace ASPax.Handler
         [SerializeField, ReadOnly, ShowIf(nameof(isRectTransform))] private Vector3 screenToWorldPointAnchoredPosition;
         /// <inheritdoc/>
         [Button("Reset")]
-        private void Reset()
+        protected override void Reset()
         {
-            _mainCamera = Camera.main;
-            isRectTransform = TryGetComponent(out _rectTransform);
+            base.Reset();
+            mainCamera = Camera.main;
+            isRectTransform = TryGetComponent(out rectTransform);
             rangeRatioHandler = 1f;
-            AssignValues();
             UpdateValues();
+            AssignValuesToInspector();
             Discard();
         }
         /// <inheritdoc/>
-        private void OnValidate()
+        protected override void OnValidate()
         {
+            base.OnValidate();
             UnityEditor.EditorApplication.delayCall += () =>
             {
                 bool conditional =
@@ -65,15 +101,15 @@ namespace ASPax.Handler
 
                 try
                 {
-                    if (_mainCamera == null)
-                        _mainCamera = Camera.main;
-                    if (_rectTransform == null)
-                        isRectTransform = TryGetComponent(out _rectTransform);
+                    if (mainCamera == null)
+                        mainCamera = Camera.main;
+                    if (rectTransform == null)
+                        isRectTransform = TryGetComponent(out rectTransform);
                     else
                         isRectTransform = true;
 
-                    AssignValues();
                     UpdateValues();
+                    AssignValuesToInspector();
                 }
                 catch
                 {
@@ -81,15 +117,10 @@ namespace ASPax.Handler
                 }
             };
         }
-        /// <inheritdoc/>
-        private void Update()
-        {
-            AssignValues();
-        }
         /// <summary>
         /// Assign values to the serialized fields
         /// </summary>
-        private void AssignValues()
+        private void AssignValuesToInspector()
         {
             position = Position;
             localPosition = LocalPosition;
@@ -120,18 +151,30 @@ namespace ASPax.Handler
             _ = screenToWorldPointLocalPosition;
             _ = screenToWorldPointAnchoredPosition;
         }
-#endif
-        private RectTransform _rectTransform;
-        private Camera _mainCamera;
         /// <inheritdoc/>
-        private void Awake()
+        protected override void OnRectTransformDimensionsChange()
         {
+            base.OnRectTransformDimensionsChange();
+            UpdateValues();
+            AssignValuesToInspector();
+#else
+        protected override void OnRectTransformDimensionsChange()
+        {
+            base.OnRectTransformDimensionsChange();
+            UpdateValues();
+#endif
+        }
+        /// <inheritdoc/>
+        protected override void Awake()
+        {
+            base.Awake();
             ComponentsAssignment();
         }
         /// <inheritdoc/>
-        private void Start()
+        protected override void Start()
         {
-            _mainCamera = Camera.main;
+            base.Start();
+            mainCamera = Camera.main;
             UpdateValues();
         }
         /// <summary>
@@ -139,12 +182,14 @@ namespace ASPax.Handler
         /// </summary>
         private void ComponentsAssignment()
         {
-            if (_rectTransform == null)
+            if (rectTransform == null)
             {
                 isRectTransform = TryGetComponent(out RectTransform rectTransform);
 
                 if (isRectTransform)
-                    _rectTransform = rectTransform;
+                    this.rectTransform = rectTransform;
+                else
+                    this.rectTransform = null;
             }
             else
             {
@@ -158,7 +203,7 @@ namespace ASPax.Handler
         private bool SetAnchoredPosition(Vector3 anchoredPosition)
         {
             if (isRectTransform)
-                _rectTransform.anchoredPosition = anchoredPosition;
+                rectTransform.anchoredPosition = anchoredPosition;
             return isRectTransform;
         }
         /// <summary>
@@ -167,7 +212,7 @@ namespace ASPax.Handler
         private Vector3 GetAnchoredPosition()
         {
             if (isRectTransform)
-                return _rectTransform.anchoredPosition;
+                return rectTransform.anchoredPosition;
             else
                 return default;
         }
@@ -178,8 +223,8 @@ namespace ASPax.Handler
         /// <remarks>- This function must be called after Start( )</remarks>
         public bool TryGetMainCamera(out Camera camera)
         {
-            var isNull = _mainCamera == null;
-            camera = isNull ? null : _mainCamera;
+            var isNull = mainCamera == null;
+            camera = isNull ? null : mainCamera;
             return isNull;
         }
         /// <summary>
@@ -237,7 +282,7 @@ namespace ASPax.Handler
         {
             if (isRectTransform)
             {
-                rect = _rectTransform.rect;
+                rect = rectTransform.rect;
                 ratio = rect.width / rect.height;
                 result = rangeRatioHandler * ratio;
             }
@@ -260,7 +305,7 @@ namespace ASPax.Handler
         /// <summary>
         /// Return Rect Trabsform if it has
         /// </summary>
-        public RectTransform RectTransform => _rectTransform;
+        public RectTransform RectTransform => rectTransform;
         /// <summary>
         /// Get or Set local scale
         /// </summary>
@@ -339,8 +384,8 @@ namespace ASPax.Handler
         /// <remarks>- If any of the float variables return NaN, it will be converted to 0f.</remarks>
         public Vector3 ScreenToWorldPointPosition
         {
-            get => Verify(_mainCamera.ScreenToWorldPoint(transform.position)).safety;
-            set => transform.position = _mainCamera.ScreenToWorldPoint(Verify(value).safety);
+            get => Verify(mainCamera.ScreenToWorldPoint(transform.position)).safety;
+            set => transform.position = mainCamera.ScreenToWorldPoint(Verify(value).safety);
         }
         /// <summary>
         /// Get or Set Camera Screen To World Point from Local Position
@@ -348,8 +393,8 @@ namespace ASPax.Handler
         /// <remarks>- If any of the float variables return NaN, it will be converted to 0f.</remarks>
         public Vector3 ScreenToWorldPointLocalPosition
         {
-            get => Verify(_mainCamera.ScreenToWorldPoint(transform.localPosition)).safety;
-            set => transform.localPosition = _mainCamera.ScreenToWorldPoint(Verify(value).safety);
+            get => Verify(mainCamera.ScreenToWorldPoint(transform.localPosition)).safety;
+            set => transform.localPosition = mainCamera.ScreenToWorldPoint(Verify(value).safety);
         }
         /// <summary>
         /// Get or Set Camera Screen To World Point from Anchored Position if it has
@@ -357,8 +402,8 @@ namespace ASPax.Handler
         /// <remarks>- If any of the float variables return NaN, it will be converted to 0f.</remarks>
         public Vector3 ScreenToWorldPointAnchoredPosition
         {
-            get => Verify(_mainCamera.ScreenToWorldPoint(GetAnchoredPosition())).safety;
-            set => SetAnchoredPosition(_mainCamera.ScreenToWorldPoint(Verify(value).safety));
+            get => Verify(mainCamera.ScreenToWorldPoint(GetAnchoredPosition())).safety;
+            set => SetAnchoredPosition(mainCamera.ScreenToWorldPoint(Verify(value).safety));
         }
         /// <summary>
         /// Returns <see cref="RectTransform.rect"/>, ratio, and ratio handler if the component has <see cref="UnityEngine.RectTransform"/>
@@ -379,4 +424,5 @@ namespace ASPax.Handler
         /// <remarks>- If you want to assign the value to <see cref="RangeRatioHandler"/> use <see cref="SetRangeRatioHandler(float)"/>.</remarks>
         public float RangeRatioHandler => rangeRatioHandler;
     }
+
 }
