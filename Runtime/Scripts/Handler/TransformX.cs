@@ -11,7 +11,7 @@ namespace ASPax.Handler
     /// <summary>
     /// Easy and safety access of all elements from transform, rectTransform and Screen/World Positions
     /// </summary>
-    public class Transform : UIBehaviour
+    public class TransformX : UIBehaviour
     {
         [Header(Header.MANAGEABLE, order = 0), HorizontalLine]
         [Space(-10, order = 1)]
@@ -33,8 +33,8 @@ namespace ASPax.Handler
         /// <summary>
         /// Used to update information via editor mode
         /// </summary>
-        [UnityEditor.CustomEditor(typeof(Transform))]
-        public class TransformEditor : UnityEditor.Editor
+        [UnityEditor.CustomEditor(typeof(TransformX))]
+        public class TransformEditor : Editor.XInspector
         {
             /// <inheritdoc/>
             private void OnSceneGUI()
@@ -49,7 +49,7 @@ namespace ASPax.Handler
                 if (UnityEditor.EditorApplication.isPlayingOrWillChangePlaymode)
                     return;
 
-                Transform _transform = (Transform)target;
+                TransformX _transform = (TransformX)target;
 
                 if (_transform == null)
                     return;
@@ -180,6 +180,7 @@ namespace ASPax.Handler
         /// <summary>
         /// Assignment of components and variables
         /// </summary>
+        [Button(nameof(ComponentsAssignment))]
         private void ComponentsAssignment()
         {
             if (rectTransform == null)

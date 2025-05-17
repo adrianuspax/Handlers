@@ -7,7 +7,7 @@ namespace ASPax.Handler
     /// Animator Handler
     /// </summary>
     [Serializable]
-    public class Animator
+    public class AnimatorX
     {
         /// <summary>
         /// Struct for handling animation parameters
@@ -24,7 +24,7 @@ namespace ASPax.Handler
             public Parameter(string name)
             {
                 this.name = name;
-                id = UnityEngine.Animator.StringToHash(name);
+                id = Animator.StringToHash(name);
             }
             /// <summary>
             /// Constructor for the struct to be instantiated
@@ -33,7 +33,7 @@ namespace ASPax.Handler
             public Parameter(AnimatorControllerParameter controllerParameter)
             {
                 name = controllerParameter.name;
-                id = UnityEngine.Animator.StringToHash(controllerParameter.name);
+                id = Animator.StringToHash(controllerParameter.name);
             }
             /// <summary>
             /// Returns the name of the parameter
@@ -47,14 +47,14 @@ namespace ASPax.Handler
             public readonly int ID => id;
         }
 
-        [SerializeField] private UnityEngine.Animator animator;
+        [SerializeField] private Animator animator;
         [SerializeField, NonReorderable] private Parameter[] parameters;
         [SerializeField, NonReorderable] private AnimationClip[] clips;
         /// <summary>
         /// Constructor for the class to be instantiated
         /// </summary>
         /// <param name="animator">Animator Component</param>
-        public Animator(UnityEngine.Animator animator)
+        public AnimatorX(Animator animator)
         {
             this.animator = animator;
             clips = animator.runtimeAnimatorController.animationClips;
@@ -67,7 +67,7 @@ namespace ASPax.Handler
         /// <summary>
         /// Returns the Animator Component
         /// </summary>
-        public UnityEngine.Animator AnimatorComponent => animator;
+        public Animator AnimatorComponent => animator;
         /// <summary>
         /// Returns AnimatorControllerParameter array
         /// </summary>
@@ -82,4 +82,3 @@ namespace ASPax.Handler
         public AnimationClip[] Clips => clips;
     }
 }
-

@@ -2,7 +2,7 @@
     "name": "com.adrianuspax.handlers",
     "displayName": "ASPax Handlers",
     "description": "Scripts for Unity for manipulating elements and components safely",
-    "version": "1.0.1",
+    "version": "2.0.0",
     "unity": "2017.1",
     "license": "MIT",
     "repository": {
