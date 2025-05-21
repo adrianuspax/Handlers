@@ -1,6 +1,6 @@
 {
-    "name": "ASPax.Handler",
-    "rootNamespace": "ASPax.Handler",
+    "name": "ASPax.Handlers",
+    "rootNamespace": "ASPax.Handlers",
     "references": [
         "GUID:2591a98a6b532a94ab3f838e90c1851c",
         "GUID:776d03a35f1b52c4a9aed9f56d7b4229",

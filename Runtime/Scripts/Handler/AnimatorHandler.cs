@@ -1,13 +1,13 @@
 using System;
 using UnityEngine;
 
-namespace ASPax.Handler
+namespace ASPax.Handlers
 {
     /// <summary>
     /// Animator Handler
     /// </summary>
     [Serializable]
-    public class AnimatorX
+    public class AnimatorHandler
     {
         /// <summary>
         /// Struct for handling animation parameters
@@ -54,20 +54,27 @@ namespace ASPax.Handler
         /// Constructor for the class to be instantiated
         /// </summary>
         /// <param name="animator">Animator Component</param>
-        public AnimatorX(Animator animator)
+        public AnimatorHandler(Animator animator)
         {
+            if (animator == null)
+            {
+                IsInstanstiated = false;
+                return;
+            }
+
             this.animator = animator;
+            parameters = new Parameter[animator.parameterCount];
             clips = animator.runtimeAnimatorController.animationClips;
 
-            parameters = new Parameter[animator.parameterCount];
+            for (var i = 0; i < animator.parameterCount; i++)
+                parameters[i] = new(animator.parameters[i]);
 
-            for (int i = 0; i < animator.parameterCount; i++)
-                parameters[i] = new Parameter(animator.parameters[i]);
+            IsInstanstiated = true;
         }
         /// <summary>
         /// Returns the Animator Component
         /// </summary>
-        public Animator AnimatorComponent => animator;
+        public Animator Animator => animator;
         /// <summary>
         /// Returns AnimatorControllerParameter array
         /// </summary>
@@ -80,5 +87,9 @@ namespace ASPax.Handler
         /// Returns the animation clips array
         /// </summary>
         public AnimationClip[] Clips => clips;
+        /// <summary>
+        /// Gets a value indicating whether the object has been instantiated.
+        /// </summary>
+        public bool IsInstanstiated { get; private set; }
     }
 }

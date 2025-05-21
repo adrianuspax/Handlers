@@ -1,7 +1,7 @@
 using UnityEngine;
 using UnityEngine.EventSystems;
 
-namespace ASPax.Handler
+namespace ASPax.Handlers
 {
     using ASPax.Attributes.Drawer;
     using ASPax.Attributes.Drawer.SpecialCases;
@@ -11,7 +11,7 @@ namespace ASPax.Handler
     /// <summary>
     /// Easy and safety access of all elements from transform, rectTransform and Screen/World Positions
     /// </summary>
-    public class TransformX : UIBehaviour
+    public class TransformHandler : UIBehaviour
     {
         [Header(Header.MANAGEABLE, order = 0), HorizontalLine]
         [Space(-10, order = 1)]
@@ -33,7 +33,7 @@ namespace ASPax.Handler
         /// <summary>
         /// Used to update information via editor mode
         /// </summary>
-        [UnityEditor.CustomEditor(typeof(TransformX))]
+        [UnityEditor.CustomEditor(typeof(TransformHandler))]
         public class TransformEditor : Editor.XInspector
         {
             /// <inheritdoc/>
@@ -49,7 +49,7 @@ namespace ASPax.Handler
                 if (UnityEditor.EditorApplication.isPlayingOrWillChangePlaymode)
                     return;
 
-                TransformX _transform = (TransformX)target;
+                TransformHandler _transform = (TransformHandler)target;
 
                 if (_transform == null)
                     return;
