@@ -293,7 +293,7 @@ namespace ASPax.Handlers
         /// </summary>
         /// <remarks>
         /// - The minimum value of <paramref name="value"/> must be 0.001f or will apply this minimum value!<br/>
-        /// - The values related to <see cref="RectTransformHandler"/> will be updated!
+        /// - The values will be updated!
         /// </remarks>
         public void SetRangeRatioHandler(float value)
         {
@@ -407,14 +407,37 @@ namespace ASPax.Handlers
             set => SetAnchoredPosition(mainCamera.ScreenToWorldPoint(Verify(value).safety));
         }
         /// <summary>
-        /// Returns <see cref="RectTransform.rect"/>, ratio, and ratio handler if the component has <see cref="UnityEngine.RectTransform"/>
+        /// Returns Rect from <see cref="RectTransform.rect"/>
         /// </summary>
-        /// <remarks>
-        /// - 'rect' will return all values from <see cref="RectTransform.rect"/>.<br/>
-        /// - 'ratio' will return a ratio calculation between <see cref="RectTransform.rect"/>.width and <see cref="RectTransform.rect"/>.height.<br/>
-        /// - 'result' will return the result of the multiplication between <see cref="RangeRatioHandler"/> and <see cref="RectTransformHandler"/>.ratio.
-        /// </remarks>
-        public (Rect rect, float ratio, float result) RectTransformHandler => (rect, ratio, result);
+        public Rect Rect => rect;
+        /// <summary>
+        /// Returns a ratio calculation between <see cref="RectTransform.rect"/>.width and <see cref="RectTransform.rect"/>.height.
+        /// </summary>
+        /// <remarks>- If the ratio is NaN or Infinity, it will return null.</remarks>
+        public float? Ratio
+        {
+            get
+            {
+                if (float.IsNaN(ratio) || float.IsInfinity(ratio))
+                    return null;
+                else
+                    return ratio;
+            }
+        }
+        /// <summary>
+        /// Returns the result of the multiplication between <see cref="RangeRatioHandler"/> and <see cref="Ratio"/>.ratio.
+        /// </summary>
+        /// <remarks>- If the ratio is NaN or Infinity, it will return null.</remarks>
+        public float? RangeRatioResult
+        {
+            get
+            {
+                if (float.IsNaN(result) || float.IsInfinity(result))
+                    return null;
+                else
+                    return result;
+            }
+        }
         /// <summary>
         /// Does the Game Object have a RectTransform?
         /// </summary>

@@ -12,3 +12,6 @@
 - Changed the name of the classes and the namespace.
 - Created a boolean that returns if the AnimatorHandler class was instantiated
 - Created a folder for inserting documents and images
+# 4.0.0 Created safe values for Ratio in TransformHandler
+- The values for Ratio and Result, as well as the Rect from RectTransform, were broken down to improve understanding
+- Safety measures were implemented to prevent NaN or +-Infinity from being returned for the Ratio and Result values. Therefore, the returned value will be Null in these cases.
