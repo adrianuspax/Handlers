@@ -13,7 +13,7 @@ namespace ASPax.Handlers
         /// Struct for handling animation parameters
         /// </summary>
         [Serializable]
-        public struct Parameter
+        public struct ParameterHandler
         {
             [SerializeField] private string name;
             [SerializeField] private int id;
@@ -21,7 +21,7 @@ namespace ASPax.Handlers
             /// Constructor for the struct to be instantiated
             /// </summary>
             /// <param name="name">Name of the parameter</param>
-            public Parameter(string name)
+            public ParameterHandler(string name)
             {
                 this.name = name;
                 id = Animator.StringToHash(name);
@@ -30,7 +30,7 @@ namespace ASPax.Handlers
             /// Constructor for the struct to be instantiated
             /// </summary>
             /// <param name="controllerParameter">Animator Controller Parameter</param>
-            public Parameter(AnimatorControllerParameter controllerParameter)
+            public ParameterHandler(AnimatorControllerParameter controllerParameter)
             {
                 name = controllerParameter.name;
                 id = Animator.StringToHash(controllerParameter.name);
@@ -48,8 +48,8 @@ namespace ASPax.Handlers
         }
 
         [SerializeField] private Animator animator;
-        [SerializeField, NonReorderable] private Parameter[] parameters;
-        [SerializeField, NonReorderable] private AnimationClip[] clips;
+        [SerializeField, NonReorderable] private ParameterHandler[] parameterHandlers;
+        [SerializeField, NonReorderable] private AnimationClip[] animationClips;
         /// <summary>
         /// Constructor for the class to be instantiated
         /// </summary>
@@ -57,19 +57,14 @@ namespace ASPax.Handlers
         public AnimatorHandler(Animator animator)
         {
             if (animator == null)
-            {
-                IsInstanstiated = false;
                 return;
-            }
 
             this.animator = animator;
-            parameters = new Parameter[animator.parameterCount];
-            clips = animator.runtimeAnimatorController.animationClips;
+            parameterHandlers = new ParameterHandler[animator.parameterCount];
+            animationClips = animator.runtimeAnimatorController.animationClips;
 
             for (var i = 0; i < animator.parameterCount; i++)
-                parameters[i] = new(animator.parameters[i]);
-
-            IsInstanstiated = true;
+                parameterHandlers[i] = new(animator.parameters[i]);
         }
         /// <summary>
         /// Returns the Animator Component
@@ -78,18 +73,18 @@ namespace ASPax.Handlers
         /// <summary>
         /// Returns AnimatorControllerParameter array
         /// </summary>
-        public AnimatorControllerParameter[] ControllerParameters => animator.parameters;
+        public AnimatorControllerParameter[] Parameters => animator.parameters;
         /// <summary>
         /// Returns the parameters struct
         /// </summary>
-        public Parameter[] Parameters => parameters;
+        public ParameterHandler[] ParameterHandlers => parameterHandlers;
         /// <summary>
         /// Returns the animation clips array
         /// </summary>
-        public AnimationClip[] Clips => clips;
+        public AnimationClip[] AnimationClips => animationClips;
         /// <summary>
         /// Gets a value indicating whether the object has been instantiated.
         /// </summary>
-        public bool IsInstanstiated { get; private set; }
+        public bool IsInstanstiated => animator != null;
     }
 }
