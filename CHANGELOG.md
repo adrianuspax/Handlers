@@ -15,6 +15,8 @@
 # 4.0.0 Created safe values for Ratio in TransformHandler
 - The values for Ratio and Result, as well as the Rect from RectTransform, were broken down to improve understanding
 - Safety measures were implemented to prevent NaN or +-Infinity from being returned for the Ratio and Result values. Therefore, the returned value will be Null in these cases.
-# 4.1.0 Improvement
+# 5.0.0 Improvement
 - Rename elements in the script for code improvement
 - Correct rectorno guarantee for IsInstantiate
+# 5.0.1 HotFix
+- HotFix IsInstatiated property

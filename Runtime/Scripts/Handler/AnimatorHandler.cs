@@ -85,6 +85,21 @@ namespace ASPax.Handlers
         /// <summary>
         /// Gets a value indicating whether the object has been instantiated.
         /// </summary>
-        public bool IsInstanstiated => animator != null;
+        public bool IsInstanstiated
+        {
+            get
+            {
+                if (animator == null)
+                    return false;
+
+                if (animationClips == null || animationClips.Length == 0)
+                    return false;
+
+                if (animator.parameterCount > 0 && (parameterHandlers == null || parameterHandlers.Length == 0))
+                    return false;
+
+                return true;
+            }
+        }
     }
 }
