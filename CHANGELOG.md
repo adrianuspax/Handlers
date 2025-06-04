@@ -20,3 +20,5 @@
 - Correct rectorno guarantee for IsInstantiate
 # 5.0.1 HotFix
 - HotFix IsInstatiated property
+# 5.0.2 Settings for operation in Editor Mode
+- Some lines of code were changed and adjusted so Transform Handler can be used in editor mode without causing Null Reference errors related to camera access.

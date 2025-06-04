@@ -49,7 +49,7 @@ namespace ASPax.Handlers
                 if (UnityEditor.EditorApplication.isPlayingOrWillChangePlaymode)
                     return;
 
-                TransformHandler _transform = (TransformHandler)target;
+                var _transform = (TransformHandler)target;
 
                 if (_transform == null)
                     return;
@@ -91,7 +91,7 @@ namespace ASPax.Handlers
             base.OnValidate();
             UnityEditor.EditorApplication.delayCall += () =>
             {
-                bool conditional =
+                var conditional =
                 UnityEditor.EditorApplication.isPlayingOrWillChangePlaymode ||
                 UnityEditor.EditorApplication.isCompiling ||
                 UnityEditor.EditorApplication.isUpdating;
@@ -224,9 +224,13 @@ namespace ASPax.Handlers
         /// <remarks>- This function must be called after Start( )</remarks>
         public bool TryGetMainCamera(out Camera camera)
         {
-            var isNull = mainCamera == null;
-            camera = isNull ? null : mainCamera;
-            return isNull;
+            camera = mainCamera == null ? Camera.main : mainCamera;
+
+            if (camera == null)
+                return false;
+
+            mainCamera = mainCamera == null ? camera : mainCamera;
+            return true;
         }
         /// <summary>
         /// Checks if any of the vector elements returns NaN.
@@ -385,8 +389,27 @@ namespace ASPax.Handlers
         /// <remarks>- If any of the float variables return NaN, it will be converted to 0f.</remarks>
         public Vector3 ScreenToWorldPointPosition
         {
+#if UNITY_EDITOR
+            get
+            {
+                if (UnityEditor.EditorApplication.isPlaying)
+                    return Verify(mainCamera.ScreenToWorldPoint(transform.position)).safety;
+                else
+                    return Verify(Camera.main.ScreenToWorldPoint(transform.position)).safety;
+            }
+
+            set
+            {
+                if (UnityEditor.EditorApplication.isPlaying)
+                    transform.position = mainCamera.ScreenToWorldPoint(Verify(value).safety);
+                else
+                    transform.position = Camera.main.ScreenToWorldPoint(Verify(value).safety);
+            }
+#else
             get => Verify(mainCamera.ScreenToWorldPoint(transform.position)).safety;
             set => transform.position = mainCamera.ScreenToWorldPoint(Verify(value).safety);
+#endif
+
         }
         /// <summary>
         /// Get or Set Camera Screen To World Point from Local Position
@@ -394,8 +417,26 @@ namespace ASPax.Handlers
         /// <remarks>- If any of the float variables return NaN, it will be converted to 0f.</remarks>
         public Vector3 ScreenToWorldPointLocalPosition
         {
+#if UNITY_EDITOR
+            get
+            {
+                if (UnityEditor.EditorApplication.isPlaying)
+                    return Verify(mainCamera.ScreenToWorldPoint(transform.localPosition)).safety;
+                else
+                    return Verify(Camera.main.ScreenToWorldPoint(transform.localPosition)).safety;
+            }
+
+            set
+            {
+                if (UnityEditor.EditorApplication.isPlaying)
+                    transform.localPosition = mainCamera.ScreenToWorldPoint(Verify(value).safety);
+                else
+                    transform.localPosition = Camera.main.ScreenToWorldPoint(Verify(value).safety);
+            }
+#else
             get => Verify(mainCamera.ScreenToWorldPoint(transform.localPosition)).safety;
             set => transform.localPosition = mainCamera.ScreenToWorldPoint(Verify(value).safety);
+#endif
         }
         /// <summary>
         /// Get or Set Camera Screen To World Point from Anchored Position if it has
@@ -403,8 +444,26 @@ namespace ASPax.Handlers
         /// <remarks>- If any of the float variables return NaN, it will be converted to 0f.</remarks>
         public Vector3 ScreenToWorldPointAnchoredPosition
         {
+#if UNITY_EDITOR
+            get
+            {
+                if (UnityEditor.EditorApplication.isPlaying)
+                    return Verify(mainCamera.ScreenToWorldPoint(GetAnchoredPosition())).safety;
+                else
+                    return Verify(Camera.main.ScreenToWorldPoint(GetAnchoredPosition())).safety;
+            }
+
+            set
+            {
+                if (UnityEditor.EditorApplication.isPlaying)
+                    SetAnchoredPosition(mainCamera.ScreenToWorldPoint(Verify(value).safety));
+                else
+                    SetAnchoredPosition(Camera.main.ScreenToWorldPoint(Verify(value).safety));
+            }
+#else
             get => Verify(mainCamera.ScreenToWorldPoint(GetAnchoredPosition())).safety;
             set => SetAnchoredPosition(mainCamera.ScreenToWorldPoint(Verify(value).safety));
+#endif
         }
         /// <summary>
         /// Returns Rect from <see cref="RectTransform.rect"/>
