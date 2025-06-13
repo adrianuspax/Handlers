@@ -22,3 +22,6 @@
 - HotFix IsInstatiated property
 # 5.0.2 Settings for operation in Editor Mode
 - Some lines of code were changed and adjusted so Transform Handler can be used in editor mode without causing Null Reference errors related to camera access.
+# 6.0.0 HotFix
+- Fix for camera reference access in TransformHandler
+- Fix and logic change in checking if AnimatorHandler needs to be instantiated

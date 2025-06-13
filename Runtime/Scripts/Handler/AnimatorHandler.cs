@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using UnityEngine;
 
 namespace ASPax.Handlers
@@ -67,6 +68,24 @@ namespace ASPax.Handlers
                 parameterHandlers[i] = new(animator.parameters[i]);
         }
         /// <summary>
+        /// Is Necessary Update Instance?
+        /// </summary>
+        public bool IsNecessaryUpdateInstance()
+        {
+            if (animator == null)
+                return true;
+
+            var clips = animator.runtimeAnimatorController.animationClips;
+
+            if (clips == null || clips.Length != animationClips.Length || !clips.SequenceEqual(animationClips))
+                return true;
+
+            if (animator.parameterCount != parameterHandlers.Length)
+                return true;
+
+            return false;
+        }
+        /// <summary>
         /// Returns the Animator Component
         /// </summary>
         public Animator Animator => animator;
@@ -82,24 +101,5 @@ namespace ASPax.Handlers
         /// Returns the animation clips array
         /// </summary>
         public AnimationClip[] AnimationClips => animationClips;
-        /// <summary>
-        /// Gets a value indicating whether the object has been instantiated.
-        /// </summary>
-        public bool IsInstanstiated
-        {
-            get
-            {
-                if (animator == null)
-                    return false;
-
-                if (animationClips == null || animationClips.Length == 0)
-                    return false;
-
-                if (animator.parameterCount > 0 && (parameterHandlers == null || parameterHandlers.Length == 0))
-                    return false;
-
-                return true;
-            }
-        }
     }
 }
