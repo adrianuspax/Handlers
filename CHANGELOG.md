@@ -25,3 +25,5 @@
 # 6.0.0 HotFix
 - Fix for camera reference access in TransformHandler
 - Fix and logic change in checking if AnimatorHandler needs to be instantiated
+# 6.0.1 Code Improvement for Behavior
+- Code improvement for running in editor mode
