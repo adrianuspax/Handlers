@@ -169,7 +169,7 @@ namespace ASPax.Handlers
         /// </summary>
         private Vector3 GetAnchoredPosition()
         {
-            if (isRectTransform) return rectTransform.anchoredPosition;
+            if (isRectTransform && rectTransform != null) return rectTransform.anchoredPosition;
             else return default;
         }
         /// <summary>
