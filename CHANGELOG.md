@@ -27,3 +27,5 @@
 - Fix and logic change in checking if AnimatorHandler needs to be instantiated
 # 6.0.1 Code Improvement for Behavior
 - Code improvement for running in editor mode
+# 6.0.2 HotFix
+- Fixed null reference issues in TransformHandler

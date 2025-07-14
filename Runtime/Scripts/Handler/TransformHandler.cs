@@ -237,7 +237,7 @@ namespace ASPax.Handlers
         /// </summary>
         private void UpdateValues()
         {
-            if (isRectTransform)
+            if (isRectTransform && rectTransform != null)
             {
                 rect = rectTransform.rect;
                 ratio = rect.width / rect.height;
