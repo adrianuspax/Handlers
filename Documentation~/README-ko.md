@@ -99,4 +99,4 @@ public void ToggleAnimation(bool isOpen)
 
 아래 이미지는 `AnimatorHandler`가 Inspector에 애니메이션 매개변수와 클립을 표시하여 각 요소의 인덱스를 쉽게 식별할 수 있도록 하는 방법을 보여줍니다.
 
-![Screenshot](../../Runtime/Documents~/Screenshot01.png)
+![Screenshot](./Images/Screenshot01.png)
