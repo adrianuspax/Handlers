@@ -1,3 +1,5 @@
+[English](./Documentation~/README-en.md) | [Korean](./Documentation~/README-ko.md)
+
 # ASPax Handlers
 
 ## Visão Geral
@@ -97,4 +99,4 @@ O `TransformHandler` é um componente que herda de `UIBehaviour` e pode ser adic
 
 A imagem abaixo demonstra como o `AnimatorHandler` exibe os parâmetros e clipes de animação no Inspector, facilitando a identificação dos índices de cada elemento.
 
-![Screenshot](Runtime/Documents~/Screenshot01.png)
+![Screenshot](./Documentation~/Images/Screenshot01.png)
